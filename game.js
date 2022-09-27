@@ -3,14 +3,14 @@ var game = new Phaser.Game(400, 490, Phaser.AUTO, 'game');
 var mainState = {
 
     preload: function() { 
-        game.stage.backgroundColor = '#D0FFC2';
+        game.stage.backgroundColor = '#FF6A5E';
         bird = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAABlBMVEXSvicAAABogyUZAAAAGUlEQVR4AWP4DwYHMOgHDEDASCN6lMYV7gChf3AJ/eB/pQAAAABJRU5ErkJggg==";
         pipe = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAABlBMVEV0vy4AAADnrrHQAAAAGUlEQVR4AWP4DwYHMOgHDEDASCN6lMYV7gChf3AJ/eB/pQAAAABJRU5ErkJggg==";
         game.load.image('bird', bird);  
         game.load.image('pipe', pipe); 
     },
 
-    create: function() { 
+    create: function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         this.pipes = game.add.group();
@@ -29,7 +29,8 @@ var mainState = {
         spaceKey.onDown.add(this.jump, this); 
 
         this.score = 0;
-        this.labelScore = this.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });  
+        this.labelScore = this.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
+        this.labelScore1 = this.game.add.text(20, 20, localStorage.getItem("score"), { font: "30px Arial", fill: "#ffffff" });  
 
         // Add the jump sound
         this.jumpSound = this.game.add.audio('jump');
@@ -65,6 +66,10 @@ var mainState = {
         // Set the alive property of the bird to false
         this.bird.alive = false;
 
+        if (this.score > localStorage.getItem("score")) {
+            localStorage.setItem("score", this.score);
+        }
+
         // Prevent new pipes from appearing
         this.game.time.events.remove(this.timer);
     
@@ -72,6 +77,8 @@ var mainState = {
         this.pipes.forEachAlive(function(p){
             p.body.velocity.x = 0;
         }, this);
+
+        
     },
 
     restartGame: function() {
